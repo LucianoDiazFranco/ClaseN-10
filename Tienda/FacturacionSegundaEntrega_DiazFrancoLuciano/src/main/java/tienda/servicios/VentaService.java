@@ -1,12 +1,13 @@
-package com.coderhouse.servicios;
+package tienda.servicios;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import com.coderhouse.modelos.Venta;
-import com.coderhouse.repositorios.VentaRepository;
+
+import tienda.modelos.Venta;
+import tienda.repositorios.VentaRepository;
 
 @Service
 public class VentaService {

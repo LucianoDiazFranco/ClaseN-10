@@ -1,9 +1,9 @@
-package com.coderhouse.repositorios;
+package tienda.repositorios;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.coderhouse.modelos.Cliente;
+import tienda.modelos.Cliente;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Integer>{

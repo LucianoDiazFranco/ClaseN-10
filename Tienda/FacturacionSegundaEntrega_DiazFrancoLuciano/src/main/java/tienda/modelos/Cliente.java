@@ -1,4 +1,4 @@
-package com.coderhouse.modelos;
+package tienda.modelos;
 
 
 import java.util.Objects;

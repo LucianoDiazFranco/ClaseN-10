@@ -1,4 +1,4 @@
-package com.coderhouse;
+package tienda;
 
 import java.util.InputMismatchException;
 import java.util.List;
@@ -10,10 +10,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.coderhouse.modelos.Cliente;
-import com.coderhouse.modelos.Producto;
-import com.coderhouse.repositorios.ClienteRepository;
-import com.coderhouse.repositorios.ProductoRepository;
+import tienda.modelos.Cliente;
+import tienda.modelos.Producto;
+import tienda.repositorios.ClienteRepository;
+import tienda.repositorios.ProductoRepository;
 
 
 @SpringBootApplication
@@ -230,7 +230,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			System.out.println("Ingrese el nuevo Apellido: ");
 			String nuevoApellido = scanner.next();
 			cliente.setApellido(nuevoApellido);//asignamos el nuevo apellido
-			System.out.println("Prodcutos Disponibles: ");
+			System.out.println("Productos Disponibles: ");
 			
 			for(Producto productos : producto) {
 				System.out.println(" "+productos.getId_producto()+"."+productos.getDescripcion());
@@ -263,7 +263,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			//Asignamos el Producto seleccionado
 			cliente.setProducto(productoSeleccionado);
 			clienteRepository.save(cliente);// y lo guardamos
-			System.out.println("Alumno modificado Correctamente");
+			System.out.println("Cliente modificado Correctamente");
 			
 		}else {
 			System.out.println("Cliente con DNI " + dni + " no fue encontrado!");
@@ -273,7 +273,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	public void eliminarClientePorDNI() {
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("Ingrese el DNI del Alumno a editar:");		
+		System.out.println("Ingrese el DNI del Cliente a editar:");		
 		int dni = scanner.nextInt();
 		Cliente cliente= clienteRepository.findById(dni).orElse(null);
 		

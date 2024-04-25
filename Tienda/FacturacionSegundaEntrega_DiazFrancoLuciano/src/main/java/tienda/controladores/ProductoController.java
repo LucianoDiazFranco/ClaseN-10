@@ -1,4 +1,4 @@
-package com.coderhouse.controladores;
+package tienda.controladores;
 
 import java.util.List;
 
@@ -14,36 +14,38 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.coderhouse.modelos.Cliente;
-import com.coderhouse.servicios.ClienteService;
+
+import tienda.modelos.Producto;
+import tienda.servicios.ProductoService;
 
 @RestController
-@RequestMapping("/clientes")
-public class ClienteController {
+@RequestMapping("/productos") // cuando accedamos a cliente nos llevara al controladorProducto
+public class ProductoController {
 
-	@Autowired
-	private ClienteService clienteService;
-
+	
+	@Autowired // nos permite utilizar todos los metodos del repositorio
+	private ProductoService productoService;
+	
 	@GetMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<List<Cliente>> listarCliente() {
+	public ResponseEntity<List<Producto>> listarProducto() {
 		try {
-			List<Cliente> cliente = clienteService.listarCliente();
-			return new ResponseEntity<>(cliente, HttpStatus.OK); // Codigo 200
+			List<Producto> producto = productoService.listarProducto();
+			return new ResponseEntity<>(producto, HttpStatus.OK); // Codigo 200
 
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error 500
 		}
 
 	}
-
+	
 	@GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Cliente> mostrarClientePorDNI(@PathVariable("id") Integer dni) {
+	public ResponseEntity<Producto> mostrarProductoPorId(@PathVariable("id") Integer id) {
 		try {
-			Cliente cliente = clienteService.mostrarAlumnoPorDNI(dni);
-			if (cliente != null) {
-				return new ResponseEntity<>(cliente, HttpStatus.OK); // Codigo 200
+			Producto producto = productoService.mostrarProductoPorId(id);
+			if (producto != null) {
+				return new ResponseEntity<>(producto, HttpStatus.OK); // Codigo 200
 			} else {
-				return new ResponseEntity<>(cliente, HttpStatus.NOT_FOUND); // Codigo 404
+				return new ResponseEntity<>(producto, HttpStatus.NOT_FOUND); // Codigo 404
 			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error 500
@@ -52,24 +54,24 @@ public class ClienteController {
 	}
 	
 	@PostMapping(value = "/agregar", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Cliente> agregarCliente(@RequestBody Cliente cliente) {
-		clienteService.agregarCliente(cliente);
-		return new ResponseEntity<>(cliente, HttpStatus.CREATED); // Codigo 201
+	public ResponseEntity<Producto> agregarProducto(@RequestBody Producto nuevoproducto) {
+		Producto productoGuardado = productoService.agregarProducto(nuevoproducto);
+		return new ResponseEntity<>(productoGuardado, HttpStatus.CREATED); // Codigo 201
 	}
 	
 	@PutMapping(value = "/{id}/editar", consumes = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<Cliente> ediarCliente (@PathVariable("id") Integer dni, @RequestBody Cliente cliente){
-		Cliente clienteEditado = clienteService.editarClientePorDNI(dni,cliente);
-		if (clienteEditado != null) {
-			return new ResponseEntity<>(clienteEditado, HttpStatus.OK); // Codigo 200
+	public ResponseEntity<Producto> ediarProducto (@PathVariable("id") Integer id, @RequestBody Producto producto){
+		Producto productoEditado = productoService.editarProductoPorId(id, producto);
+		if (productoEditado != null) {
+			return new ResponseEntity<>(productoEditado, HttpStatus.OK); // Codigo 200
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Error 404
 		}
 	}
 	
 	@DeleteMapping(value = "/{id}/eliminar")
-	public ResponseEntity<Void> eliminarCLiente(@PathVariable("id") Integer dni) {
-		boolean eliminado = clienteService.eliminarClientePorDNI(dni);
+	public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Integer id) {
+		boolean eliminado = productoService.eliminarProductoPorDNI(id);
 		if (eliminado){
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Codigo 204
 		} else{

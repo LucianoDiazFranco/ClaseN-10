@@ -1,4 +1,4 @@
-package com.coderhouse.servicios;
+package tienda.servicios;
 
 import java.util.List;
 
@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-
-import com.coderhouse.modelos.Cliente;
-import com.coderhouse.repositorios.ClienteRepository;
+import tienda.modelos.Cliente;
+import tienda.repositorios.ClienteRepository;
 
 @Service
 public class ClienteService {

@@ -1,4 +1,4 @@
-package com.coderhouse.controladores;
+package tienda.controladores;
 
 import java.util.List;
 
@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.coderhouse.modelos.Venta;
-import com.coderhouse.servicios.VentaService;
+
+import tienda.modelos.Venta;
+import tienda.servicios.VentaService;
 
 @RestController
 @RequestMapping("/ventas") // cuando accedamos a cliente nos llevara al controladorProducto
