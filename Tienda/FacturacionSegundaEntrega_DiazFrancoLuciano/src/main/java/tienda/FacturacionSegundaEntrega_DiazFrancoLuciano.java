@@ -53,9 +53,9 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+ "4. Modificar Cliente por DNI\n "
 							+ "5. Eliminar Cliente por DNI\n "
 							+ "\n"+"*PRODUCTOS* \n "
-							+ "6. Listar todos los Productos     NO DISPONIBLE \n "
+							+ "6. Listar todos los Productos\n "
 							+ "7. Listar Productos Disponibles   NO DISPONIBLE\n "
-							+ "8. Buscar Producto por ID         NO DISPONIBLE\n "
+							+ "8. Buscar Producto por ID\n "
 							+ "9. Agregar Producto\n "
 							+ "10. Modificar Producto por ID     NO DISPONIBLE\n "
 							+ "11. Eliminar Producto por ID      NO DISPONIBLE\n "
@@ -91,9 +91,28 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 					case 5:
 						eliminarClientePorDNI();
 						break;
+					case 6:
+						listarTodosLosProducto();
+						break;
+					case 7:
+						//listaProductosDisponibles();
+						break;
+					case 8:
+						BuscarProductoPorId();
+						break;
 					case 9:
 						agregarProducto();
 						break;
+					case 10:
+						//modificarProductoPorId();
+						break;
+					case 11:
+						//EliminarProductoPorId();
+						break;
+					case 12:
+						//comprobanteDeVentaPorDNI();
+						break;
+						
 					case 0:
 						System.out.println("Cerrando Programa.....\n"+
 											"Programa Cerrado Exitosamente");
@@ -133,10 +152,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+cliente.getApellido()+", su producto es: "
 							+cliente.getProducto().getDescripcion());
 			}
-		}
-		
-		
-		
+		}	
 		
 	}
 	
@@ -300,7 +316,43 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	}
 	
 	//METODOS PRODUCTOS
-	public void agregarProducto() {
+	public void listarTodosLosProducto() {
+		List<Producto>listaProducto = productoRepository.findAll();//llamo a todos los productos
+		if (listaProducto.isEmpty()) {//si no existen productos
+			System.out.println("No existe Producto para Mostrar!");
+		}else {
+			System.out.println("Lista de Productos");
+			for(Producto producto : listaProducto) {
+				System.out.println("Producto con ID: #_"
+						+producto.getId_producto()
+						+" "+ producto.getTipo()+", "
+						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama());
+			}
+		}
+	}
+	//Crear este metodo
+	public void listaProductosDisponibles() {
+		
+	}
+	
+	public void BuscarProductoPorId() {
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el Id del Producto a Buscar:");
+		int id = scanner.nextInt(); 
+		
+		Producto producto = productoRepository.findById(id).orElse(null);
+		
+		//verificamos que exista el producto 
+		if(producto !=null) {
+			System.out.println("El Producto seleccionado es: "+producto.getTipo()
+						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama());
+		}else {
+			System.out.println("El Producto con ID: "+id+" No fue encontrado");
+		}
+	}
+	
+  	public void agregarProducto() {
 		Producto producto = new Producto();
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
@@ -310,8 +362,24 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		System.out.println("Ingrese la Descripcion del Producto:");
 		producto.setDescripcion(scanner.nextLine());
 		
+		System.out.println("Ingrese a que Rama pertenece el Producto:");
+		producto.setRama(scanner.nextLine());
+		
 		productoRepository.save(producto);
 		System.out.println("El producto "+producto.getTipo()
 							+" fue Guardado con Exito!.");
 	}
+	
+  	//Crear este metodo
+  	public void modificarProductoPorId() {
+  		
+  	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
