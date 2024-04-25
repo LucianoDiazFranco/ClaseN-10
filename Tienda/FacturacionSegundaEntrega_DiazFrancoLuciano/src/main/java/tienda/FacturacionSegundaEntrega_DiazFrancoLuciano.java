@@ -42,13 +42,26 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			int opcion = -1; //Inicializo con una Opcion Invalida
 			do {
 				try {
-					System.out.println("Menu: \n "
+					System.out.println("\n "+
+							"****Bienvenidos a nuestra tienda de Ropa****\n"
+							+ "\n "
+							+ "Seleccione la operacion \n"
+							+ "\n"+"*CLIENTES* \n "
 							+ "1. Listar a todos los Clientes\n "
-							+ "2. Agregar Cliente\n "
-							+ "3. Buscar Cliente por DNI\n "
+							+ "2. Buscar Cliente por DNI\n "
+							+ "3. Agregar Cliente\n "
 							+ "4. Modificar Cliente por DNI\n "
 							+ "5. Eliminar Cliente por DNI\n "
-							+ "6. Agregar Producto\n "
+							+ "\n"+"*PRODUCTOS* \n "
+							+ "6. Listar todos los Productos     NO DISPONIBLE \n "
+							+ "7. Listar Productos Disponibles   NO DISPONIBLE\n "
+							+ "8. Buscar Producto por ID         NO DISPONIBLE\n "
+							+ "9. Agregar Producto\n "
+							+ "10. Modificar Producto por ID     NO DISPONIBLE\n "
+							+ "11. Eliminar Producto por ID      NO DISPONIBLE\n "
+							+ "\n"+"*VENTA* \n "
+							+ "12. Comprobante de Venta por DNI  NO DISPONIBLE\n "
+							+ "\n "
 							+ "0. Salir\n ");
 					System.out.println("Ingresar opcion: ");
 					
@@ -67,10 +80,10 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 						listaTodosLosClientes();
 						break;
 					case 2:
-						agregarCliente();
+						buscarClientePorDNI(); 
 						break;
 					case 3:
-						buscarClientePorDNI();
+						agregarCliente();
 						break;
 					case 4:
 						modificarClientePorDNI();
@@ -78,7 +91,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 					case 5:
 						eliminarClientePorDNI();
 						break;
-					case 6:
+					case 9:
 						agregarProducto();
 						break;
 					case 0:
@@ -106,7 +119,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		}
 	}
 
-	
+	//METODOS CLIENTES
 	public void listaTodosLosClientes() {
 		List<Cliente> listaCliente = clienteRepository.findAll();// llamo a todos los clientes
 		if (listaCliente.isEmpty()) {//si no existen clientes
@@ -116,14 +129,35 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			for(Cliente cliente : listaCliente) {//recorre la lista de clientes y los trae
 				System.out.println("El Cliente con DNI: #"
 							+cliente.getDni()
-							+" se llama "+cliente.getNombre()+""
-							+cliente.getApellido()+" y su prodcuto es "
+							+" se llama "+cliente.getNombre()+" "
+							+cliente.getApellido()+", su producto es: "
 							+cliente.getProducto().getDescripcion());
 			}
 		}
 		
 		
 		
+		
+	}
+	
+	public void buscarClientePorDNI() {
+
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el DNI del Cliente a Buscar:");
+		int dni = scanner.nextInt();
+		
+		//buscamos al cliente de la tabla cliente por"finById"DNI
+		Cliente cliente= clienteRepository.findById(dni).orElse(null);
+		
+		//Por si no existe el cliente buscado
+		if(cliente!=null) {
+			System.out.println("El Cliente Seleccionado es: "+cliente.getNombre()
+					+" "+cliente.getApellido()+" y tiene el Producto: "
+					+cliente.getProducto().getDescripcion());
+		}else {
+			System.out.println("El cliente con DNI: "+dni+" No fue encontrado");
+		}
 		
 	}
 	
@@ -188,26 +222,6 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		
 	}
 
-	public void buscarClientePorDNI() {
-		@SuppressWarnings("resource")
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Ingrese el DNI del Cliente a Buscar:");
-		int dni = scanner.nextInt();
-		
-		//buscamos al cliente de la tabla cliente por"finById"DNI
-		Cliente cliente= clienteRepository.findById(dni).orElse(null);
-		
-		//Por si no existe el cliente buscado
-		if(cliente!=null) {
-			System.out.println("El Cliente Seleccionado es: "+cliente.getNombre()
-					+cliente.getApellido()+" y tiene el Producto "
-					+cliente.getProducto().getDescripcion());
-		}else {
-			System.out.println("El cliente con DNI: "+dni+" No fue encontrado");
-		}
-		
-	}
-	
 	public void modificarClientePorDNI() {
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
@@ -285,6 +299,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		}	
 	}
 	
+	//METODOS PRODUCTOS
 	public void agregarProducto() {
 		Producto producto = new Producto();
 		@SuppressWarnings("resource")
