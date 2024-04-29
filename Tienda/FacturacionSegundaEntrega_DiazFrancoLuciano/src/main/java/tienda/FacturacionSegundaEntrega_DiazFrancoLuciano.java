@@ -57,8 +57,8 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+ "7. Listar Productos Disponibles\n "
 							+ "8. Buscar Producto por ID\n "
 							+ "9. Agregar Producto\n "
-							+ "10. Modificar Producto por ID     NO DISPONIBLE\n "
-							+ "11. Eliminar Producto por ID      NO DISPONIBLE\n "
+							+ "10. Modificar Producto por ID\n "
+							+ "11. Eliminar Producto por ID\n "
 							+ "\n"+"*VENTA* \n "
 							+ "12. Comprobante de Venta por DNI  NO DISPONIBLE\n "
 							+ "\n "
@@ -104,10 +104,10 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 						agregarProducto();
 						break;
 					case 10:
-						//modificarProductoPorId();
+						modificarProductoPorId();
 						break;
 					case 11:
-						//EliminarProductoPorId();
+						eliminarProductoPorId();
 						break;
 					case 12:
 						//comprobanteDeVentaPorDNI();
@@ -314,6 +314,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			System.out.println("Cliente con DNI " + dni + " no fue encontrado!");		
 		}	
 	}
+
 	
 	//METODOS PRODUCTOS
 	public void listarTodosLosProducto() {
@@ -384,7 +385,85 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	
   	//Crear este metodo
   	public void modificarProductoPorId() {
-  		
+  		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID del Producto a editar:");	
+		int id = scanner.nextInt();
+		
+		Producto producto = productoRepository.findById(id).orElse(null);
+		List<Cliente> cliente = clienteRepository.findAll();
+		if(cliente.isEmpty()) {
+			System.out.println("No existen Productos para mostrar. "
+					+ "Debe agregar al menos un Producto!");
+		}
+		//por si no existe el producto
+		if(producto!=null) {
+			System.out.println("El Producto encontrado es: "+producto.getId_producto()+"#_ "+producto.getTipo()+" "
+						+producto.getDescripcion() +", que pertenece a la rama"
+						+producto.getRama());
+			System.out.println("Ingrese el nuevo Titulo: ");
+			String nuevoProducto = scanner.next();
+			producto.setTipo(nuevoProducto);//asignamos el nuevo tipo
+			System.out.println("Ingrese la nueva Descripcion: ");
+			String nuevaDescripcion = scanner.next();
+			producto.setDescripcion(nuevaDescripcion);//asignamos el nuevo apellido
+			System.out.println("Productos Disponibles: ");
+			
+			for(Cliente clientes : cliente) {
+				System.out.println(" "+clientes.getNombre()+"."+clientes.getApellido());
+			}
+				
+			int clienteDNI;
+			Cliente clienteSeleccionado = null;
+			boolean clienteValido = false;
+			
+			while(!clienteValido) {
+				try {
+					
+					System.out.println("Coloque el DNI del Cliente: ");
+					clienteDNI = scanner.nextInt();
+					//buscamos el DNI en el repository
+					clienteSeleccionado = clienteRepository.findById(clienteDNI).orElse(null);
+					
+					//si existe cambia a true, si no vuelve a pedir un dato
+					if(clienteSeleccionado != null) {
+						clienteValido = true;
+					}else {
+						System.out.println("El DNI del Cliente seleccionado no es Valido");
+					}
+				}catch(InputMismatchException e) {
+					System.err.println("Error: Ingrese uN DNI Valido para el Cliente");
+					scanner.nextLine();
+				}
+			}
+			
+			//Asignamos el Producto seleccionado
+			producto.setId_producto(null);
+			productoRepository.save(producto);// y lo guardamos
+			System.out.println("Cliente modificado Correctamente");
+			
+		}else {
+			System.out.println("Cliente con DNI " + id + " no fue encontrado!");
+		}
+	}
+		
+  	public void eliminarProductoPorId() {
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID del Producto a Eliminar:");		
+		int id = scanner.nextInt();
+		Producto producto= productoRepository.findById(id).orElse(null);
+		
+		if(producto !=null) {
+			productoRepository.delete(producto);
+			System.out.println("El Producto fue Eliminado con Exito!");		
+		}else {
+			System.out.println("producto con ID " + id + " no fue encontrado!");		
+		}	
+	}
+  	
+  	
+  	
   	}
 	
 	
@@ -394,4 +473,4 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	
 	
 	
-}
+
