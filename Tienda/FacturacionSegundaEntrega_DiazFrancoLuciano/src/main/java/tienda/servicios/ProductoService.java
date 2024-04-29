@@ -46,4 +46,8 @@ public class ProductoService {
 			return false;
 		}
 	}
+	
+	public List<Producto> listarProductosDisponibles() {
+		return productoRepository.findByVentaIsNull();
+	}
 }

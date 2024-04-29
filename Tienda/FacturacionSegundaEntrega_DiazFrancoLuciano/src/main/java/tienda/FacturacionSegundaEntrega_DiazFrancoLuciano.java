@@ -54,7 +54,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+ "5. Eliminar Cliente por DNI\n "
 							+ "\n"+"*PRODUCTOS* \n "
 							+ "6. Listar todos los Productos\n "
-							+ "7. Listar Productos Disponibles   NO DISPONIBLE\n "
+							+ "7. Listar Productos Disponibles\n "
 							+ "8. Buscar Producto por ID\n "
 							+ "9. Agregar Producto\n "
 							+ "10. Modificar Producto por ID     NO DISPONIBLE\n "
@@ -95,7 +95,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 						listarTodosLosProducto();
 						break;
 					case 7:
-						//listaProductosDisponibles();
+						listaProductosDisponibles();
 						break;
 					case 8:
 						BuscarProductoPorId();
@@ -330,8 +330,20 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			}
 		}
 	}
-	//Crear este metodo
+	
 	public void listaProductosDisponibles() {
+		List<Producto>listaProducto = productoRepository.findByVentaIsNull();//llamo a todos los productos
+		if (listaProducto.isEmpty()) {//si no existen productos
+			System.out.println("No existe Productos diponibles para Mostrar!");
+		}else {
+			System.out.println("Lista de Productos disponibles");
+			for(Producto producto : listaProducto) {
+				System.out.println("Producto con ID: #_"
+						+producto.getId_producto()
+						+" "+ producto.getTipo()+", "
+						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama());
+			}
+		}
 		
 	}
 	

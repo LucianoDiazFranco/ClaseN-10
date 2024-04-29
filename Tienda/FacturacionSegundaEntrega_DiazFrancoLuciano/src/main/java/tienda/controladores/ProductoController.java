@@ -80,4 +80,16 @@ public class ProductoController {
 
 	}
 	
+	@GetMapping(value = "/disponibilidad", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<List<Producto>> listarProductosDisponibles() {
+		try {
+			List<Producto> producto = productoService.listarProductosDisponibles();
+			return new ResponseEntity<>(producto, HttpStatus.OK); // Codigo 200
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Error 500
+		}
+
+	}
+	
 }
