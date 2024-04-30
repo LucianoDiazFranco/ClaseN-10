@@ -25,6 +25,9 @@ public class Producto {
 	private String rama;
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
+	@Column(name = "VALOR")
+	private Integer valor;
+	
 	
 	@OneToMany(mappedBy = "producto")
 	private List<Cliente> cliente;
@@ -34,7 +37,7 @@ public class Producto {
 	private Venta venta;
 	
 	public Venta getVenta() {
-		return venta;
+		return this.venta;
 	}
 	public void setVenta(Venta venta) {
 		this.venta =venta;
@@ -75,6 +78,24 @@ public class Producto {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+	
+	public Integer getValor() {
+		return this.valor;
+	}
+	public void setValor(Integer valor) {
+		this.valor = valor;
+	}
+	
+
+	public List<Cliente> getCliente() {
+		return cliente;
+	}
+	public void setCliente(List<Cliente> cliente) {
+		this.cliente = cliente;
+	}
+	
+	
+	
 	
 	
 }
