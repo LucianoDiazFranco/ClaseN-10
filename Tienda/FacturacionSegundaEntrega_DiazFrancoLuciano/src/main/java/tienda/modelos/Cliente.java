@@ -3,6 +3,7 @@ package tienda.modelos;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,20 +11,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-
+@Schema(description = "Modelo de Cliente")
 @Entity
 @Table(name = "cliente")
-public class Cliente {
+public class Cliente {	
+	@Schema(description = "DNI del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example ="28333555")
 	@Id
 	@Column(name = "DNI")
 	private Integer dni;
+	@Schema(description = "Nombre del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example ="Facundo")
 	@Column(name = "NOMBRE")
 	private String nombre;
+	@Schema(description = "Apellido del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example ="Garcia")
 	@Column(name = "APELLIDO")
 	private String apellido;
+	@Schema(description = "Orden del Cliente", requiredMode = Schema.RequiredMode.REQUIRED, example ="123")
 	@Column(name = "ORDEN")
 	private Integer orden;
 	
+	
+	@Schema(description = "Id del producto asignado del Cliente")
 	@ManyToOne
 	@JoinColumn(name = "Id_PRODUCTO")
 	private Producto producto;

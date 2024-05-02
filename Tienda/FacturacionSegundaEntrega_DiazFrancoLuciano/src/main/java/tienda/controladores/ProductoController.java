@@ -15,17 +15,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import tienda.modelos.Producto;
 import tienda.servicios.ProductoService;
 
 @RestController
 @RequestMapping("/productos") // cuando accedamos a cliente nos llevara al controladorProducto
+@Tag(name= "Gestion de Productos", description = "Endpoints para Gestionar Productos")
 public class ProductoController {
 
 	
 	@Autowired // nos permite utilizar todos los metodos del repositorio
 	private ProductoService productoService;
 	
+	
+	@Operation(summary = "Obtener la Lista de Producto")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Lista de Producto Obtenida Correctamente",
+						content = {@Content(mediaType = "appication/json", schema = @Schema(implementation = Producto.class))}),
+				@ApiResponse(responseCode = "500", description = "Error interno del Servidor", content = @Content)})
 	@GetMapping(value = "/", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Producto>> listarProducto() {
 		try {
@@ -38,6 +52,11 @@ public class ProductoController {
 
 	}
 	
+	@Operation(summary = "Obtener Producto por Id")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Producto Obtenido Correctamente",
+						content = {@Content(mediaType = "appication/json", schema = @Schema(implementation = Producto.class))}),
+				@ApiResponse(responseCode = "404", description = "Error interno del Servidor", content = @Content)})
 	@GetMapping(value = "/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Producto> mostrarProductoPorId(@PathVariable("id") Integer id) {
 		try {
@@ -53,12 +72,22 @@ public class ProductoController {
 		}
 	}
 	
+	@Operation(summary = "Agregar Producto")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Producto Agregado Correctamente",
+						content = {@Content(mediaType = "appication/json", schema = @Schema(implementation = Producto.class))}),
+				@ApiResponse(responseCode = "500", description = "Error interno del Servidor", content = @Content)})
 	@PostMapping(value = "/agregar", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Producto> agregarProducto(@RequestBody Producto nuevoproducto) {
 		Producto productoGuardado = productoService.agregarProducto(nuevoproducto);
 		return new ResponseEntity<>(productoGuardado, HttpStatus.CREATED); // Codigo 201
 	}
 	
+	@Operation(summary = "Editar Producto")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Producto Editado Correctamente",
+						content = {@Content(mediaType = "appication/json", schema = @Schema(implementation = Producto.class))}),
+				@ApiResponse(responseCode = "404", description = "Error al editar el Producto", content = @Content)})
 	@PutMapping(value = "/{id}/editar", consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<Producto> ediarProducto (@PathVariable("id") Integer id, @RequestBody Producto producto){
 		Producto productoEditado = productoService.editarProductoPorId(id, producto);
@@ -69,6 +98,10 @@ public class ProductoController {
 		}
 	}
 	
+	@Operation(summary = "Eliminar Producto")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Producto Eliminado Correctamente", content = @Content),
+				@ApiResponse(responseCode = "404", description = "Error eliminar el Producto", content = @Content)})
 	@DeleteMapping(value = "/{id}/eliminar")
 	public ResponseEntity<Void> eliminarProducto(@PathVariable("id") Integer id) {
 		boolean eliminado = productoService.eliminarProductoPorDNI(id);
@@ -80,6 +113,11 @@ public class ProductoController {
 
 	}
 	
+	@Operation(summary = "Disponibilidad de los Producto")
+	@ApiResponses(value = {
+				@ApiResponse(responseCode = "200", description = "Lista de Productos disponibles Correctamente",
+						content = {@Content(mediaType = "appication/json", schema = @Schema(implementation = Producto.class))}),
+				@ApiResponse(responseCode = "500", description = "Error al editar el Producto", content = @Content)})
 	@GetMapping(value = "/disponibilidad", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<Producto>> listarProductosDisponibles() {
 		try {

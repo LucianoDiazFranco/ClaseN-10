@@ -150,7 +150,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+cliente.getDni()
 							+" se llama "+cliente.getNombre()+" "
 							+cliente.getApellido()+", su producto es: "
-							+cliente.getProducto().getDescripcion()
+							+cliente.getProducto().getTipo()+" "+cliente.getProducto().getDescripcion()
 							+" y su numero de orden es "+cliente.getOrden());
 			}
 		}	
