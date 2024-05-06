@@ -1,5 +1,8 @@
 package tienda.modelos;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,7 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -23,7 +27,7 @@ public class Venta {
 	private Integer id_venta;
 	@Schema(description = "Fecha de la Venta", requiredMode = Schema.RequiredMode.REQUIRED, example ="22-2-2004")
 	@Column(name = "FECHA")
-	private Integer fecha;
+	private LocalDateTime fecha;
 	@Schema(description = "Tipo de Venta", requiredMode = Schema.RequiredMode.REQUIRED, example ="Efectivo")
 	@Column(name = "TIPO_DE_VENTA")
 	private String Tipo_de_venta;
@@ -34,15 +38,19 @@ public class Venta {
 	
 	
 	//relacion con la tabla productos
-	@ManyToOne
-	@JoinColumn(name = "id_producto")
-	private Producto producto;
+	@ManyToMany
+	@JoinTable(
+			 name = "venta_producto",
+			 joinColumns = @JoinColumn(name = "id_venta"),
+			 inverseJoinColumns = @JoinColumn(name = "id_producto"))
+	private List<Producto> producto;
 	
 	// relacion de uno a uno con la tabla cliente(un cliente solo puede tener una venta y la venta pertenece a un solo cliente)
 	@Schema(description = "Lista de ventas de los Clientes")
 	@OneToOne
 	@JoinColumn(name = "dni")
 	private Cliente cliente;
+
 	
 	//una vez finalizada la venta, restamos la cantidad de productos seleccionados por el stock
 	// y volver a guardar el objeto producto con el stock nuevo
@@ -62,11 +70,11 @@ public class Venta {
 		this.id_venta = id_venta;
 	}
 
-	public Integer getFecha() {
+	public LocalDateTime getFecha() {
 		return this.fecha;
 	}
 
-	public void setFecha(Integer fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
@@ -85,5 +93,22 @@ public class Venta {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+	
+	public Cliente getCliente() {
+	        return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+	        this.cliente = cliente;
+	}
+
+	public List<Producto> getProductos() {
+	        return this.producto;
+	}
+
+	public void setProductos(List<Producto> productos) {
+	        this.producto = productos ;
+	}
+	
 	
 }

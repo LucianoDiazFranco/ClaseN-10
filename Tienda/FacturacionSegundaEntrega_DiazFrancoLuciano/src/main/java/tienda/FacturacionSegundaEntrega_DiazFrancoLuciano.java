@@ -7,6 +7,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -22,8 +23,10 @@ import com.google.gson.JsonParser;
 
 import tienda.modelos.Cliente;
 import tienda.modelos.Producto;
+import tienda.modelos.Venta;
 import tienda.repositorios.ClienteRepository;
 import tienda.repositorios.ProductoRepository;
+import tienda.repositorios.VentaRepository;
 
 
 @SpringBootApplication
@@ -35,6 +38,8 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	@Autowired
 	private ProductoRepository productoRepository;// llamo al repositorio asi utilizamos todos sus metodos
 	
+	@Autowired
+	private VentaRepository ventaRepository;// llamo al repositorio asi utilizamos todos sus metodos
 	
 	public static void main(String[] args) {
 		SpringApplication.run(FacturacionSegundaEntrega_DiazFrancoLuciano.class, args);
@@ -72,7 +77,11 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 							+ "10. Modificar Producto por ID\n "
 							+ "11. Eliminar Producto por ID\n "
 							+ "\n"+"*VENTA* \n "
-							+ "12. Comprobante de Venta por DNI  NO DISPONIBLE\n "
+							+ "12. Listar todas las Ventas\n "
+							+ "13. Listar venta por ID\n "
+							+ "14. Crear Venta\n "
+							+ "15. Comprobante de Venta por DNI  NO DISPONIBLE\n "
+							+ "16. Eliminar venta por ID\n "
 							+ "\n "
 							+ "0. Salir\n ");
 					System.out.println("Ingresar opcion: ");
@@ -122,7 +131,19 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 						eliminarProductoPorId();
 						break;
 					case 12:
+						listarTodasLasVentas();
+						break;
+					case 13:
+						crearVenta();
+						break;
+					case 14:
+						buscarVentaPorId();
+						break;
+					case 15:
 						comprobanteDeVentaPorDNI();
+						break;
+					case 16:
+						EliminarVenta();
 						break;
 						
 					case 0:
@@ -331,7 +352,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 	public void listarTodosLosProducto() {
 		List<Producto>listaProducto = productoRepository.findAll();//llamo a todos los productos
 		if (listaProducto.isEmpty()) {//si no existen productos
-			System.out.println("No existe Producto para Mostrar!");
+			System.out.println("No existe Venta para Mostrar!");
 		}else {
 			System.out.println("Lista de Productos");
 			for(Producto producto : listaProducto) {
@@ -398,9 +419,19 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		    System.out.println("Error: Ingresa un número entero válido.");
 		}
 		
-		productoRepository.save(producto);
-		System.out.println("El producto "+producto.getTipo()
-							+" fue Guardado con Exito!.");
+		//Agregamos el numero inicial del Stock
+		System.out.println("Ingrese el Stock Inicial del Producto:");
+	    try {
+	        Integer stockInicial = Integer.valueOf(scanner.nextLine());
+	        producto.setStock(stockInicial);
+	    } catch (NumberFormatException e) {
+	        System.out.println("Error: Ingresa un número entero válido para el stock inicial.");
+	        return; // Salir del método si el stock inicial no es válido
+	    }
+	    
+	    productoRepository.save(producto);
+	    System.out.println("El producto " + producto.getTipo() + " fue Guardado con Éxito!");
+	
 	}
 	
   	public void modificarProductoPorId() {
@@ -465,6 +496,122 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
   	
   	
   	//Metodo a realizar
+  	public void listarTodasLasVentas() {
+  		List<Venta> listaVenta = ventaRepository.findAll();//llamamos a todas las ventas
+  		if (listaVenta.isEmpty()) {
+  			System.out.println("No existe Producto para Mostrar!");
+  		}else {
+  			System.out.println("Lista de las Ventas");
+  			for(Venta venta :listaVenta) {
+  				System.out.println("Venta con ID: #_"
+  						+venta.getId_venta()+" "
+  						+venta.getTipo_de_venta()+" "
+  						+venta.getDescripcion()+", "
+  						+venta.getFecha()+", "
+  						+venta.getCliente()+", "
+  						+venta.getProductos());
+  			}
+  			
+  		}
+  	}
+
+  	public void buscarVentaPorId() {
+  		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el Id del Producto a Buscar:");
+		int id = scanner.nextInt();
+		
+		Venta venta = ventaRepository.findById(id).orElse(null);
+		if(venta != null) {
+			System.out.println("La venta Seleccionada es: "+venta.getTipo_de_venta()
+						+" "+venta.getDescripcion()
+						+" en la fecha, "+venta.getFecha()
+						+" del cliente "+venta.getCliente()
+						+" cn su producto "+ venta.getProductos());
+		}else {
+			System.out.println("La venta con ID: "+id+" No fue Encontrado");
+		}
+  	}
+  	
+  	public void crearVenta() {
+  		
+  		Scanner scanner = new Scanner(System.in);
+  	    
+  	    // Ingresar el DNI del cliente
+  	    System.out.println("Ingrese el DNI del Cliente para la Venta:");
+  	    int dniCliente = scanner.nextInt();
+  	    // Buscar al cliente en la base de datos por su DNI
+  	    Cliente cliente = clienteRepository.findById(dniCliente).orElse(null);
+  	    if (cliente == null) {
+  	        System.out.println("Cliente con DNI " + dniCliente + " no fue encontrado!");
+  	        return;
+  	    }
+  	    
+  	// Solicitar al usuario que ingrese los IDs de los productos para la venta
+  	    List<Producto> productosVenta = new ArrayList<>();
+  	    boolean agregarProductos = true;
+  	    while (agregarProductos) {
+  	        System.out.println("Ingrese el ID del Producto para la Venta (0 para finalizar):");
+  	        int idProducto = scanner.nextInt();
+  	        if (idProducto == 0) {
+  	            // El usuario ha finalizado de agregar productos
+  	            agregarProductos = false;
+  	        } else {
+  	            // Buscar el producto en la base de datos por su ID y agregarlo a la lista de productos de la venta
+  	            Producto producto = productoRepository.findById(idProducto).orElse(null);
+  	            if (producto != null) {
+  	              // Verificar si hay stock suficiente para el producto seleccionado
+  	              if (producto.getStock() < 1) {
+                      System.out.println("No hay suficiente stock para el producto: " + producto.getTipo());
+                  }else {
+                      productosVenta.add(producto);
+                      producto.setStock(producto.getStock() - 1); // Descontar el stock del producto
+                      productoRepository.save(producto); // Actualizar el stock en la base de datos
+                  }
+  	            } else {
+  	                System.out.println("Producto con ID " + idProducto + " no fue encontrado!");
+  	            }
+  	        }
+  	    }
+  	    
+  	    // Asociar los productos a la venta y descontar el stock
+  	    Venta venta = new Venta();
+  	    venta.setCliente(cliente);;
+  	    venta.setProductos(productosVenta);
+  	    
+  	    for (Producto producto : productosVenta) {
+  	        producto.setStock(producto.getStock() - 1);
+  	        productoRepository.save(producto); // Actualizar el stock en la base de datos
+  	        System.out.println("Venta creada exitosamente.");
+  	    }
+		
+  	  /*	
+		// Preguntar al usuario si desea generar un comprobante
+	    System.out.println("¿Desea generar un comprobante de venta? (S)i / (N)o");
+	    Scanner scanner = new Scanner(System.in);
+	    String respuesta = scanner.nextLine().toUpperCase();
+		
+	 // Generar el comprobante si la respuesta es "S" (Sí)
+	    if (respuesta.equals("S")) {
+	        Comprobante comprobante = generarComprobante(venta);
+	        comprobanteRepository.save(comprobante); // Guardar el comprobante en la base de datos
+	        // Mostrar el comprobante en consola
+	        System.out.println("Comprobante de Venta:");
+	        System.out.println(comprobante);
+	    }
+	    */ 
+  	}
+  	/*public Comprobante generarComprobante(Venta venta) {
+  	    // Lógica para generar el comprobante
+  	    LocalDateTime fechaEmisionComprobante = LocalDateTime.now();
+  	    // Crear el objeto Comprobante y setear la información
+  	    Comprobante comprobante = new Comprobante();
+  	    comprobante.setVenta(venta);
+  	    comprobante.setFechaEmision(fechaEmisionComprobante);
+  	    // Puedes agregar más información al comprobante según sea necesario
+  	    return comprobante;
+  	}
+  	*/
   	public void comprobanteDeVentaPorDNI() {
   		//en la creacion de la venta preguntamos si queremos generar comprobante
   		//si es si, llamamos al metodo generarComprobante y mostramos en consola el comprobante
@@ -473,6 +620,21 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
   		LocalDateTime fechaEmisionComprobante = getCurrentDateTime();
   		//seteamos la fecha en el objeto comprobante
   		//save comprobante.
+  	}
+  	
+  	public void EliminarVenta() {
+  		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese el ID de la venta a Eliminar:");		
+		int id = scanner.nextInt();
+		Venta venta = ventaRepository.findById(id).orElse(null);
+		
+		if(venta!=null) {
+			ventaRepository.delete(venta);
+			System.out.println("La venta fue Eliminada con Exito!");	
+		}else {
+			System.out.println("Venta con ID " + id + " no fue encontrado!");		
+		}	
   	}
   	
   	@SuppressWarnings("deprecation")
@@ -513,7 +675,6 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
         }
 		return currentDateTime;
 	}
-  	
   	
   	}
 	
