@@ -1,14 +1,14 @@
 package tienda.modelos;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -31,11 +31,18 @@ public class Venta {
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
 	
-	@Schema(description = "Lista de Ventas de los Productos")
-	@OneToMany(mappedBy = "venta")
-	private List<Producto> producto;
 	
-	//Join por cliente oneToOne
+	
+	//relacion con la tabla productos
+	@ManyToOne
+	@JoinColumn(name = "id_producto")
+	private Producto producto;
+	
+	// relacion de uno a uno con la tabla cliente(un cliente solo puede tener una venta y la venta pertenece a un solo cliente)
+	@Schema(description = "Lista de ventas de los Clientes")
+	@OneToOne
+	@JoinColumn(name = "dni")
+	private Cliente cliente;
 	
 	//una vez finalizada la venta, restamos la cantidad de productos seleccionados por el stock
 	// y volver a guardar el objeto producto con el stock nuevo

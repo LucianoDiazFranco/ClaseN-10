@@ -161,8 +161,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 				System.out.println("El Cliente con DNI: #"
 							+cliente.getDni()
 							+" se llama "+cliente.getNombre()+" "
-							+cliente.getApellido()+", su producto es: "
-							+cliente.getProducto().getTipo()+" "+cliente.getProducto().getDescripcion()
+							+cliente.getApellido()
 							+" y su numero de orden es "+cliente.getOrden());
 			}
 		}	
@@ -182,8 +181,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		//Por si no existe el cliente buscado
 		if(cliente!=null) {
 			System.out.println("El Cliente Seleccionado es: "+cliente.getNombre()
-					+" "+cliente.getApellido()+" y tiene el Producto: "
-					+cliente.getProducto().getDescripcion()
+					+" "+cliente.getApellido()
 					+" y su numero de orden es "+cliente.getOrden());
 		}else {
 			System.out.println("El cliente con DNI: "+dni+" No fue encontrado");
@@ -240,15 +238,14 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		}
 		
 		//Asignamos el Producto seleccionado
-		cliente.setProducto(productoSeleccionado);
+		
 		
 		cliente.setOrden((int) (Math.random() * 10000));
 		
 		clienteRepository.save(cliente);//guardamos al cliente
 		
 		System.out.println("Cliente guardado "+cliente.getNombre()+" "+
-						cliente.getApellido()+" y su Producto es "+
-						cliente.getProducto().getDescripcion()
+						cliente.getApellido()
 						);
 		
 	}
@@ -267,8 +264,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		//por si no existe el cliente
 		if(cliente!=null) {
 			System.out.println("El Cliente encontrado es: "+cliente.getNombre()+""
-					+cliente.getApellido()+" y se asigno el producto "
-					+cliente.getProducto());
+					+cliente.getApellido());
 			System.out.println("Ingrese el nuevo Nombre: ");
 			String nuevoNombre = scanner.next();
 			cliente.setNombre(nuevoNombre);//asignamos el nuevo nombre
@@ -306,8 +302,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 				}
 			}
 			
-			//Asignamos el Producto seleccionado
-			cliente.setProducto(productoSeleccionado);
+			
 			clienteRepository.save(cliente);// y lo guardamos
 			System.out.println("Cliente modificado Correctamente");
 			
@@ -343,14 +338,14 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 				System.out.println("Producto con ID: #_"
 						+producto.getId_producto()
 						+" "+ producto.getTipo()+", "
-						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama()
+						+" "+producto.getDescripcion()
 						+" y su valor es "+producto.getValor()+ "$");
 			}
 		}
 	}
 	
 	public void listaProductosDisponibles() {
-		List<Producto>listaProducto = productoRepository.findByVentaIsNull();//llamo a todos los productos
+		List<Producto>listaProducto = productoRepository.findByVentasIsNull();//llamo a todos los productos
 		if (listaProducto.isEmpty()) {//si no existen productos
 			System.out.println("No existe Productos diponibles para Mostrar!");
 		}else {
@@ -359,7 +354,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 				System.out.println("Producto con ID: #_"
 						+producto.getId_producto()
 						+" "+ producto.getTipo()+", "
-						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama()
+						+" "+producto.getDescripcion()
 						+" y su valor es "+producto.getValor()+ "$");
 			}
 		}
@@ -377,7 +372,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		//verificamos que exista el producto 
 		if(producto !=null) {
 			System.out.println("El Producto seleccionado es: "+producto.getTipo()
-						+" "+producto.getDescripcion()+", Pertenece a la Rama: "+producto.getRama()
+						+" "+producto.getDescripcion()
 						+" y su valor es "+producto.getValor()+ "$");
 		}else {
 			System.out.println("El Producto con ID: "+id+" No fue encontrado");
@@ -393,9 +388,6 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		
 		System.out.println("Ingrese la Descripcion del Producto:");
 		producto.setDescripcion(scanner.nextLine());
-		
-		System.out.println("Ingrese a que Rama pertenece el Producto:");
-		producto.setRama(scanner.nextLine());
 		
 		System.out.println("Ingrese el Valor del Producto:");
 		String entrada = scanner.nextLine();
@@ -426,8 +418,8 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		//por si no existe el producto
 		if(producto!=null) {
 			System.out.println("El Producto encontrado es: "+producto.getId_producto()+"#_ "+producto.getTipo()+" "
-						+producto.getDescripcion() +", que pertenece a la rama "
-						+producto.getRama()+" y su valor es "+producto.getValor());
+						+producto.getDescripcion() 
+						+" y su valor es "+producto.getValor());
 			System.out.println("Ingrese el nuevo Producto: ");
 			String nuevoProducto = scanner.next();
 			producto.setTipo(nuevoProducto);//asignamos el nuevo producto
@@ -438,10 +430,6 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			
 			// Consumir el salto de línea restante
 			scanner.nextLine();
-			
-			System.out.println("Ingrese la Rama al que pertenece: ");
-			String nuevaRama = scanner.nextLine();
-			producto.setRama(nuevaRama);
 			
 			System.out.println("Ingrese el Valor del Producto:");
 			String valor = scanner.nextLine();
@@ -474,6 +462,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 			System.out.println("producto con ID " + id + " no fue encontrado!");		
 		}	
 	}
+  	
   	
   	//Metodo a realizar
   	public void comprobanteDeVentaPorDNI() {

@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Schema(description = "Modelo de Cliente")
@@ -29,18 +28,11 @@ public class Cliente {
 	@Column(name = "ORDEN")
 	private Integer orden;
 	
+	@Schema(description = "Id de la venta asignada al Cliente")
+	// relacion con la tabla venta uno a uno
+	@OneToOne(mappedBy = "cliente")
+	private Venta venta;
 	
-	@Schema(description = "Id del producto asignado del Cliente")
-	@ManyToOne
-	@JoinColumn(name = "Id_PRODUCTO")
-	private Producto producto;
-	
-	public Producto getProducto() {
-		return producto;
-	}
-	public void setProducto(Producto producto) {
-		this.producto = producto;
-	}
 	public Cliente() {
 		
 	}

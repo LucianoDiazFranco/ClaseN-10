@@ -1,12 +1,11 @@
 package tienda.modelos;
 
+
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,36 +25,22 @@ public class Producto {
 	@Schema(description = "Tipo de Producto", requiredMode = Schema.RequiredMode.REQUIRED, example ="Remera")
 	@Column(name = "TIPO")
 	private String tipo;
-	@Schema(description = "Rama que pertenece el Producto", requiredMode = Schema.RequiredMode.REQUIRED, example ="Unidad")
-	@Column(name = "RAMA")
-	private String rama;
 	@Schema(description = "Descripccion del Producto", requiredMode = Schema.RequiredMode.REQUIRED, example ="Manga larga color Gris")
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
 	@Schema(description = "Valor del Producto", requiredMode = Schema.RequiredMode.REQUIRED, example ="6400")
 	@Column(name = "VALOR")
 	private Integer valor;
+	@Schema(description = "Stock del Producto", requiredMode = Schema.RequiredMode.REQUIRED, example ="15")
+	@Column(name = "STOCK")
+	private Integer stock;
 	
-	//crear columna con el stock disponible
 	//agregar en la creacion del producto, el stock inicial
 	
-	//Borrar
-	@Schema(description = "Lista de Productos de los Clientes")
-	@OneToMany(mappedBy = "producto")
-	private List<Cliente> cliente;
+	//relacion con la tabla ventas de uno a muchos
+	 @OneToMany(mappedBy = "producto")
+	 private List<Venta> ventas;
 	
-	//Borrar por que va del lado de la venta
-	@Schema(description = "Id de la Venta")
-	@ManyToOne
-	@JoinColumn(name = "Id_VENTA")
-	private Venta venta;
-	
-	public Venta getVenta() {
-		return this.venta;
-	}
-	public void setVenta(Venta venta) {
-		this.venta =venta;
-	}
 	
 	public Producto(){
 		//Constructor
@@ -77,12 +62,14 @@ public class Producto {
 		this.tipo = tipo;
 	}
 
-	public String getRama() {
-		return this.rama;
+
+
+	public Integer getStock() {
+		return this.stock;
 	}
 
-	public void setRama(String rama) {
-		this.rama = rama;
+	public void setStock(Integer stock) {
+		this.stock = stock;
 	}
 
 	public String getDescripcion() {
@@ -101,12 +88,7 @@ public class Producto {
 	}
 	
 
-	public List<Cliente> getCliente() {
-		return cliente;
-	}
-	public void setCliente(List<Cliente> cliente) {
-		this.cliente = cliente;
-	}
+
 	
 	
 	

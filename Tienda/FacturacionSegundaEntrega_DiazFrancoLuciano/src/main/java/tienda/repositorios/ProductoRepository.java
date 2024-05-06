@@ -10,6 +10,6 @@ import tienda.modelos.Producto;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Integer>{
 
-	 List<Producto> findByVentaIsNull();
+	 List<Producto> findByVentasIsNull();
 
 }

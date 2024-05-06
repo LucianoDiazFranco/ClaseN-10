@@ -48,6 +48,6 @@ public class ProductoService {
 	}
 	
 	public List<Producto> listarProductosDisponibles() {
-		return productoRepository.findByVentaIsNull();
+		return productoRepository.findByVentasIsNull();
 	}
 }
