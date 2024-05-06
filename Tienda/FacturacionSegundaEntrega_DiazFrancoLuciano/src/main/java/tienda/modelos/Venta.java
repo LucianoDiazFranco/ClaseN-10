@@ -35,6 +35,14 @@ public class Venta {
 	@OneToMany(mappedBy = "venta")
 	private List<Producto> producto;
 	
+	//Join por cliente oneToOne
+	
+	//una vez finalizada la venta, restamos la cantidad de productos seleccionados por el stock
+	// y volver a guardar el objeto producto con el stock nuevo
+	
+	
+	//Necesitamos crear una tabla/objeto comprobante que contenga id de comprobante, id de la venta, fecha de comprobante (obtenida por URL externa)
+	
 	public Venta() {
 		
 	}

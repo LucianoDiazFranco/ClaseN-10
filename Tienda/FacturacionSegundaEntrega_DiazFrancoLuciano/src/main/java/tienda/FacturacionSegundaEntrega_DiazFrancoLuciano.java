@@ -1,5 +1,12 @@
 package tienda;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -9,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import tienda.modelos.Cliente;
 import tienda.modelos.Producto;
@@ -35,7 +45,9 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
 		mostrarMenu();
 		
 	}
+	
 	public void mostrarMenu() {
+		
 		try {
 			Scanner scanner = new Scanner(System.in);
 			
@@ -465,8 +477,53 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
   	
   	//Metodo a realizar
   	public void comprobanteDeVentaPorDNI() {
-  		
+  		//en la creacion de la venta preguntamos si queremos generar comprobante
+  		//si es si, llamamos al metodo generarComprobante y mostramos en consola el comprobante
+  		//si es no, llamamos al metodo generarComprobante y no lo mostramos en consola
+  		//armar toda la logica del comprobante
+  		LocalDateTime fechaEmisionComprobante = getCurrentDateTime();
+  		//seteamos la fecha en el objeto comprobante
+  		//save comprobante.
   	}
+  	
+  	@SuppressWarnings("deprecation")
+  	private LocalDateTime getCurrentDateTime() {
+		LocalDateTime currentDateTime = null;
+		try {
+            
+			URL url = new URL("http://worldclockapi.com/api/json/utc/now");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            int respuesta = conn.getResponseCode();
+            if (respuesta != 200) {
+                throw new RuntimeException("Ocurrio un error! " + respuesta);
+            } else {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer content = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                in.close();
+
+                // Parsear el JSON
+                JsonObject jsonObject = JsonParser.parseString(content.toString()).getAsJsonObject();
+                String currentDateTimeStr = jsonObject.get("currentDateTime").getAsString();
+
+                // Convertir la fecha a ZonedDateTime
+                ZonedDateTime dateTime = ZonedDateTime.parse(currentDateTimeStr);
+
+                // Ajustar la zona horaria a UTC-3
+                currentDateTime = dateTime.withZoneSameInstant(ZoneId.of("UTC-3")).toLocalDateTime();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		return currentDateTime;
+	}
   	
   	
   	}

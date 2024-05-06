@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>Clase_11_ok</artifactId>
+	<artifactId>FacturacionSegundaEntrega_DiazFrancoLuciano</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Clase_11_ok</name>
+	<name>FacturacionSegundaEntrega_DiazFrancoLuciano</name>
 	<description>API REST FULL</description>
 	<properties>
 		<java.version>21</java.version>
@@ -39,6 +39,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.coderhouse</groupId>
+			<artifactId>clase-08</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.coderhouse</groupId>
+			<artifactId>clase-14</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>Prueba</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

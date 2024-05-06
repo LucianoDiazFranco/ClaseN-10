@@ -36,10 +36,15 @@ public class Producto {
 	@Column(name = "VALOR")
 	private Integer valor;
 	
+	//crear columna con el stock disponible
+	//agregar en la creacion del producto, el stock inicial
+	
+	//Borrar
 	@Schema(description = "Lista de Productos de los Clientes")
 	@OneToMany(mappedBy = "producto")
 	private List<Cliente> cliente;
 	
+	//Borrar por que va del lado de la venta
 	@Schema(description = "Id de la Venta")
 	@ManyToOne
 	@JoinColumn(name = "Id_VENTA")
