@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
-
+import java.util.Map;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import tienda.modelos.Cliente;
+import tienda.modelos.Comprobante;
 import tienda.modelos.Producto;
 import tienda.modelos.Venta;
 import tienda.repositorios.ClienteRepository;
+import tienda.repositorios.ComprobanteRepository;
 import tienda.repositorios.ProductoRepository;
 import tienda.repositorios.VentaRepository;
 
@@ -40,6 +43,9 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
    @Autowired
    private VentaRepository ventaRepository;// llamo al repositorio asi utilizamos todos sus metodos
 
+   @Autowired
+   private ComprobanteRepository comprobanteRepository;// llamo al repositorio asi utilizamos todos sus metodos
+   
    public static void main(String[] args) {
       SpringApplication.run(FacturacionSegundaEntrega_DiazFrancoLuciano.class, args);
    }
@@ -489,7 +495,7 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
    public void crearVenta() {
 
       Scanner scanner = new Scanner(System.in);
-      private Map<Integer, Integer> cantidadPorProducto;
+      Map<Integer, Integer> cantidadPorProducto;
       // Ingresar el DNI del cliente
       System.out.println("Ingrese el DNI del Cliente para la Venta:");
       int dniCliente = scanner.nextInt();
@@ -539,44 +545,45 @@ public class FacturacionSegundaEntrega_DiazFrancoLuciano implements CommandLineR
       venta.setCliente(cliente);
       ;
       venta.setProductos(productosVenta);
-
+      
+   // Mostrar el detalle de la venta y actualizar el stock
       for (Producto producto : productosVenta) {
-         producto.setStock(producto.getStock() - 1);
-         productoRepository.save(producto); // Actualizar el stock en la base de datos
-         System.out.println("Venta creada exitosamente.");
+          // Obtener la cantidad vendida de ese producto del mapa cantidadPorProducto
+          Integer cantidadVendidaDeEseProducto = cantidadPorProducto.get(producto.getId_producto());
+          
+          // Imprimir la descripción, el valor unitario, la cantidad vendida y el valor total
+          System.out.println("Producto: " + producto.getDescripcion());
+          System.out.println("Valor unitario: " + producto.getValor()); // Suponiendo que haya un método para obtener el valor del producto
+          System.out.println("Cantidad vendida: " + cantidadVendidaDeEseProducto);
+          // Calcular el valor total multiplicando el valor unitario por la cantidad vendida
+          double valorTotal = producto.getValor() * cantidadVendidaDeEseProducto;
+          System.out.println("Valor total: " + valorTotal);
+          
+          System.out.println("Venta creada exitosamente.");
       }
-		//Para obtener la cantidad por id produto, usamos el mapa de la siguiente manera, recorriendo la lista de productos de la venta:
-      //Integer cantidadVendidaDeEseProducto = cantidadPorProducto.get(producto.getId_producto());
-      //Entonces luego dibujas en el comprobante, el producto, con su descripción, con su precio unitario, la cantidad y el precio total lo multiplicas
-
-  	  /*	
-		// Preguntar al usuario si desea generar un comprobante
-	    System.out.println("¿Desea generar un comprobante de venta? (S)i / (N)o");
-	    Scanner scanner = new Scanner(System.in);
-	    String respuesta = scanner.nextLine().toUpperCase();
-		
-	 // Generar el comprobante si la respuesta es "S" (Sí)
-	    if (respuesta.equals("S")) {
-	        Comprobante comprobante = generarComprobante(venta);
-	        comprobanteRepository.save(comprobante); // Guardar el comprobante en la base de datos
-	        // Mostrar el comprobante en consola
-	        System.out.println("Comprobante de Venta:");
-	        System.out.println(comprobante);
-	    }
-	    */
+   // Preguntar al usuario si desea generar un comprobante
+      System.out.println("¿Desea generar un comprobante de venta? (S)i / (N)o");
+      String respuesta = scanner.next().toUpperCase();
+      if (respuesta.equals("S")) {
+          // Generar y guardar el comprobante en la tabla correspondiente
+          Comprobante comprobante = new Comprobante();
+          comprobante.setVenta(venta); // Asignar la venta al comprobante
+          comprobante.setFechaComprobante(LocalDateTime.now()); // Asignar la fecha actual al comprobante
+          comprobante.setDescripcion("Comprobante de venta para la venta ID: " + venta.getId_venta()); // Asignar una descripción al comprobante
+          
+          // Guardar el comprobante en la tabla comprobante usando el servicio correspondiente
+          comprobante.setIdComprobante(comprobante);
+          
+          System.out.println("Comprobante de venta generado exitosamente.");
+      } else {
+          // Si el usuario elige no generar el comprobante, no se imprime nada
+          System.out.println("Comprobante de venta no generado.");
+      }
+  
+	    
    }
 
-   /*public Comprobante generarComprobante(Venta venta) {
-       // Lógica para generar el comprobante
-       LocalDateTime fechaEmisionComprobante = LocalDateTime.now();
-       // Crear el objeto Comprobante y setear la información
-       Comprobante comprobante = new Comprobante();
-       comprobante.setVenta(venta);
-       comprobante.setFechaEmision(fechaEmisionComprobante);
-       // Puedes agregar más información al comprobante según sea necesario
-       return comprobante;
-   }
-   */
+  
    public void comprobanteDeVentaPorDNI() {
       //en la creacion de la venta preguntamos si queremos generar comprobante
       //si es si, llamamos al metodo generarComprobante y mostramos en consola el comprobante
